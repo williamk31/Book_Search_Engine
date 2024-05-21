@@ -3,31 +3,35 @@ const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        userById: async (parent, { _id }) => {
-            return User.findById({ _id });
-        },
-        userByUsername: async (parent, { username }) => {
-            return User.findOne({ username });
-        },
+        me: async ( parent, args, context ) => {
+            const foundUser = await User.findOne({
+                _id: context.user._id
+            });
+
+            if (!foundUser) {
+                throw AuthenticationError;
+            }
+            return foundUser
+        }
     },
 
     Mutation: {
-        createUser: async (parent, { username, email, password }) => {
+        addUser: async (parent, { username, email, password }) => {
             const user = await User.create({ username, email, password });
             const token = signToken(user);
 
             return { token, user };
         },
 
-        login: async (parent, { username, password }) => {
-            const user = User.findOne({ username });
+        login: async (parent, { email, password }) => {
+            const user = await User.findOne({ email });
 
             if (!user) {
                 throw AuthenticationError;
             }
-
-            const correctPw = await user.isCorrectPassword(password);
-
+        
+            const correctPw = await user.isCorrectPassword(password)
+          
             if (!correctPw) {
                 throw AuthenticationError;
             }
@@ -36,12 +40,12 @@ const resolvers = {
             return {token, user };
         },
 
-        saveBook: async (parent, { userId, body }, context) => {
+        saveBook: async (parent, { bookInput }, context) => {
             if (context.user) {
-                return User.findOneAndUpdate(
-                    { _id: userId },
+                return await User.findOneAndUpdate(
+                    { _id: context.user._id },
                     {
-                        $addToSet: {savedBooks: body}
+                        $addToSet: {savedBooks: bookInput}
                     },
                     { new: true, runValidators: true }
                 );
@@ -49,11 +53,11 @@ const resolvers = {
             throw AuthenticationError;
         },
 
-        deleteBook: async (parent, { bookId }, context) => {
+        removeBook: async (parent, args, context) => {
             if (context.user) {
-                return User.findOneAndUpdate(
+                return await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: bookId }},
+                    { $pull: { savedBooks: args }},
                     { new: true }
                 );
             }
