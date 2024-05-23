@@ -1,4 +1,4 @@
-const { User, Book } = require('../models');
+const { User } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
@@ -19,6 +19,7 @@ const resolvers = {
         addUser: async (parent, { username, email, password }) => {
             const user = await User.create({ username, email, password });
             const token = signToken(user);
+            console.log('this is from resolvers', token)
 
             return { token, user };
         },
@@ -37,6 +38,7 @@ const resolvers = {
             }
 
             const token = signToken(user);
+            console.log('this is from login', token)
             return {token, user };
         },
 
