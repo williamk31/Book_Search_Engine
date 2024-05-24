@@ -103,7 +103,7 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This application is a single page web application. Simply click [here]() to use this webpage. 
+This application is a single page web application. Simply click [here](https://book-search-engine-ap60.onrender.com/) to use this webpage. 
 
 ### Prerequisites
 
@@ -120,7 +120,7 @@ No installation required!
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Follow the link to be taken to the deployed application: [Book Search Engine]()
+Follow the link to be taken to the deployed application: [Book Search Engine](https://book-search-engine-ap60.onrender.com/)
 
 Once on the site, you can search for books, as demonstrated in the following screenshot: 
 ![Search Screenshot](assets/images/search.png)
